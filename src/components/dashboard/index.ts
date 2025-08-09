@@ -4,3 +4,4 @@ export { default as RepositoriesList } from "./RepositoriesList";
 export { default as NextStepsGuide } from "./NextStepsGuide";
 export { default as AuthenticationError } from "./AuthenticationError";
 export { default as RecentActivities } from "./RecentActivities";
+export { PipelineExecutionsList } from "./PipelineExecutionsList";

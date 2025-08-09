@@ -1,13 +1,19 @@
 "use client"; // This component runs on the client
 
 import { useRouter } from "next/navigation";
-import { useAuth, useGitHubRepositories, useActivities } from "@/hooks";
+import {
+  useAuth,
+  useGitHubRepositories,
+  useActivities,
+  usePipelineExecutions,
+} from "@/hooks";
 import {
   DashboardHeader,
   RepositoriesList,
   NextStepsGuide,
   AuthenticationError,
   RecentActivities,
+  PipelineExecutionsList,
 } from "@/components/dashboard";
 import { LoadingSpinner } from "@/components/ui";
 
@@ -26,6 +32,13 @@ export default function DashboardPage() {
     error: activitiesError,
     refetch: refetchActivities,
   } = useActivities(token, 15);
+  const {
+    executions,
+    stats,
+    isLoading: executionsLoading,
+    error: executionsError,
+    refetch: refetchExecutions,
+  } = usePipelineExecutions(undefined, 20);
 
   const handleLogout = () => {
     logout();
@@ -66,6 +79,14 @@ export default function DashboardPage() {
               isLoading={activitiesLoading}
               error={activitiesError}
               onRefresh={refetchActivities}
+            />
+            
+            <PipelineExecutionsList
+              executions={executions}
+              stats={stats}
+              isLoading={executionsLoading}
+              error={executionsError}
+              onRefresh={refetchExecutions}
             />
           </div>
         ) : (
