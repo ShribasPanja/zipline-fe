@@ -1,5 +1,6 @@
 import { Activity } from "@/hooks/useActivities";
 import { useSocket } from "@/hooks";
+import { ArtifactsList } from "@/components/artifacts";
 import { useState } from "react";
 
 interface ActivityItemProps {
@@ -79,6 +80,7 @@ const LiveLogViewer = ({ executionId, onClose }: LiveLogProps) => {
 
 const ActivityItem = ({ activity }: ActivityItemProps) => {
   const [showLiveLogs, setShowLiveLogs] = useState(false);
+  const [showArtifacts, setShowArtifacts] = useState(false);
 
   const getActivityColor = () => {
     switch (activity.status) {
@@ -193,14 +195,35 @@ const ActivityItem = ({ activity }: ActivityItemProps) => {
               activity.status === "in_progress" &&
               activity.metadata?.executionId && (
                 <div className="mt-2">
-                  {!showLiveLogs ? (
+                  <div className="flex gap-2 mb-2">
+                    {!showLiveLogs ? (
+                      <button
+                        onClick={() => setShowLiveLogs(true)}
+                        className="text-xs text-yellow-400 hover:text-yellow-300 border border-yellow-400/30 px-2 py-1 rounded font-mono"
+                      >
+                        show_live_logs
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setShowLiveLogs(false)}
+                        className="text-xs text-yellow-600 hover:text-yellow-500 border border-yellow-600/30 px-2 py-1 rounded font-mono"
+                      >
+                        hide_live_logs
+                      </button>
+                    )}
                     <button
-                      onClick={() => setShowLiveLogs(true)}
-                      className="text-xs text-yellow-400 hover:text-yellow-300 border border-yellow-400/30 px-2 py-1 rounded font-mono"
+                      onClick={() => {
+                        window.open(
+                          `/dag/live/${activity.metadata?.executionId}`,
+                          "_blank"
+                        );
+                      }}
+                      className="text-xs text-orange-400 hover:text-orange-300 border border-orange-400/30 px-2 py-1 rounded font-mono"
                     >
-                      show_live_logs
+                      view_live_dag
                     </button>
-                  ) : (
+                  </div>
+                  {showLiveLogs && (
                     <LiveLogViewer
                       executionId={activity.metadata.executionId}
                       onClose={() => setShowLiveLogs(false)}
@@ -214,17 +237,56 @@ const ActivityItem = ({ activity }: ActivityItemProps) => {
               activity.status !== "in_progress" &&
               activity.metadata?.executionId && (
                 <div className="mt-2">
-                  <button
-                    onClick={() => {
-                      window.open(
-                        `/logs/${activity.metadata?.executionId}`,
-                        "_blank"
-                      );
-                    }}
-                    className="text-xs text-purple-400 hover:text-purple-300 border border-purple-400/30 px-2 py-1 rounded font-mono"
-                  >
-                    view_logs
-                  </button>
+                  <div className="flex gap-2 mb-2">
+                    <button
+                      onClick={() => {
+                        window.open(
+                          `/logs/${activity.metadata?.executionId}`,
+                          "_blank"
+                        );
+                      }}
+                      className="text-xs text-purple-400 hover:text-purple-300 border border-purple-400/30 px-2 py-1 rounded font-mono"
+                    >
+                      view_logs
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open(
+                          `/dag/${activity.metadata?.executionId}`,
+                          "_blank"
+                        );
+                      }}
+                      className="text-xs text-cyan-400 hover:text-cyan-300 border border-cyan-400/30 px-2 py-1 rounded font-mono"
+                    >
+                      view_dag
+                    </button>
+                    <button
+                      onClick={() => {
+                        window.open(
+                          `/artifacts/${activity.metadata?.executionId}`,
+                          "_blank"
+                        );
+                      }}
+                      className="text-xs text-yellow-400 hover:text-yellow-300 border border-yellow-400/30 px-2 py-1 rounded font-mono"
+                    >
+                      view_artifacts
+                    </button>
+                    <button
+                      onClick={() => setShowArtifacts(!showArtifacts)}
+                      className="text-xs text-orange-400 hover:text-orange-300 border border-orange-400/30 px-2 py-1 rounded font-mono"
+                    >
+                      {showArtifacts ? "hide_inline" : "show_inline"}
+                    </button>
+                  </div>
+
+                  {showArtifacts && (
+                    <div className="mt-3">
+                      <ArtifactsList
+                        executionId={activity.metadata.executionId}
+                        isCollapsed={false}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
           </div>

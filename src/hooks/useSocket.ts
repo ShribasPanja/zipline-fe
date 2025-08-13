@@ -15,11 +15,26 @@ interface PipelineStatus {
   timestamp: string;
 }
 
+interface StepStatus {
+  stepName: string;
+  status: "pending" | "running" | "success" | "failed";
+  metadata?: {
+    startTime?: string;
+    endTime?: string;
+    duration?: number;
+    error?: string;
+  };
+  timestamp: string;
+}
+
 export const useSocket = (executionId?: string) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [logs, setLogs] = useState<PipelineLog[]>([]);
   const [status, setStatus] = useState<PipelineStatus | null>(null);
+  const [stepStatuses, setStepStatuses] = useState<{
+    [stepName: string]: StepStatus;
+  }>({});
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 5;
 
@@ -82,6 +97,14 @@ export const useSocket = (executionId?: string) => {
       setStatus(statusData);
     });
 
+    newSocket.on("step-status", (stepStatusData: StepStatus) => {
+      console.log("[SOCKET] Received step status:", stepStatusData);
+      setStepStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [stepStatusData.stepName]: stepStatusData,
+      }));
+    });
+
     setSocket(newSocket);
 
     return () => {
@@ -94,6 +117,7 @@ export const useSocket = (executionId?: string) => {
 
   const clearLogs = () => {
     setLogs([]);
+    setStepStatuses({});
   };
 
   const joinPipeline = (newExecutionId: string) => {
@@ -114,6 +138,7 @@ export const useSocket = (executionId?: string) => {
     isConnected,
     logs,
     status,
+    stepStatuses,
     clearLogs,
     joinPipeline,
     leavePipeline,
