@@ -13,7 +13,7 @@ export function usePipelineControl() {
   const [error, setError] = useState<string | null>(null);
 
   const API_BASE =
-    process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
   const cancelPipeline = async (
     executionId: string
@@ -44,7 +44,8 @@ export function usePipelineControl() {
         data: data.data,
       };
     } catch (err: unknown) {
-      const errorMessage = (err as Error).message || "Failed to cancel pipeline";
+      const errorMessage =
+        (err as Error).message || "Failed to cancel pipeline";
       setError(errorMessage);
       return {
         success: false,
