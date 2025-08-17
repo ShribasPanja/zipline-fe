@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface RepositorySecret {
   key: string;
@@ -24,9 +24,10 @@ export const useSecrets = (repoFullName: string) => {
     error: null,
   });
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
-  const fetchSecrets = async () => {
+  const fetchSecrets = useCallback(async () => {
     if (!repoFullName) return;
 
     setState((prev) => ({ ...prev, loading: true, error: null }));
@@ -48,14 +49,14 @@ export const useSecrets = (repoFullName: string) => {
         secrets: data.data || [],
         loading: false,
       }));
-    } catch (error: any) {
+    } catch (error: unknown) {
       setState((prev) => ({
         ...prev,
-        error: error.message || "Failed to fetch secrets",
+        error: (error as Error).message || "Failed to fetch secrets",
         loading: false,
       }));
     }
-  };
+  }, [repoFullName, API_BASE]);
 
   const saveSecret = async (key: string, value: string): Promise<boolean> => {
     try {
@@ -79,10 +80,10 @@ export const useSecrets = (repoFullName: string) => {
 
       await fetchSecrets(); // Refresh the list
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       setState((prev) => ({
         ...prev,
-        error: error.message || "Failed to save secret",
+        error: (error as Error).message || "Failed to save secret",
       }));
       return false;
     }
@@ -112,10 +113,10 @@ export const useSecrets = (repoFullName: string) => {
 
       await fetchSecrets(); // Refresh the list
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       setState((prev) => ({
         ...prev,
-        error: error.message || "Failed to update secrets",
+        error: (error as Error).message || "Failed to update secrets",
       }));
       return false;
     }
@@ -139,10 +140,10 @@ export const useSecrets = (repoFullName: string) => {
 
       await fetchSecrets(); // Refresh the list
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       setState((prev) => ({
         ...prev,
-        error: error.message || "Failed to delete secret",
+        error: (error as Error).message || "Failed to delete secret",
       }));
       return false;
     }
@@ -172,10 +173,10 @@ export const useSecrets = (repoFullName: string) => {
         isValid: data.data.isValid,
         message: data.data.message,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         isValid: false,
-        message: error.message || "Failed to validate key",
+        message: (error as Error).message || "Failed to validate key",
       };
     }
   };
@@ -186,7 +187,7 @@ export const useSecrets = (repoFullName: string) => {
 
   useEffect(() => {
     fetchSecrets();
-  }, [repoFullName]);
+  }, [fetchSecrets]);
 
   return {
     ...state,

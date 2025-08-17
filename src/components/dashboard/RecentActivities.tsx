@@ -1,6 +1,5 @@
 import { Activity } from "@/hooks/useActivities";
 import { useSocket } from "@/hooks";
-import { ArtifactsList } from "@/components/artifacts";
 import { useState } from "react";
 
 interface ActivityItemProps {
@@ -80,7 +79,6 @@ const LiveLogViewer = ({ executionId, onClose }: LiveLogProps) => {
 
 const ActivityItem = ({ activity }: ActivityItemProps) => {
   const [showLiveLogs, setShowLiveLogs] = useState(false);
-  const [showArtifacts, setShowArtifacts] = useState(false);
 
   const getActivityColor = () => {
     switch (activity.status) {
@@ -271,22 +269,13 @@ const ActivityItem = ({ activity }: ActivityItemProps) => {
                     >
                       view_artifacts
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => setShowArtifacts(!showArtifacts)}
                       className="text-xs text-orange-400 hover:text-orange-300 border border-orange-400/30 px-2 py-1 rounded font-mono"
                     >
                       {showArtifacts ? "hide_inline" : "show_inline"}
-                    </button>
+                    </button> */}
                   </div>
-
-                  {showArtifacts && (
-                    <div className="mt-3">
-                      <ArtifactsList
-                        executionId={activity.metadata.executionId}
-                        isCollapsed={false}
-                      />
-                    </div>
-                  )}
                 </div>
               )}
           </div>

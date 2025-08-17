@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 interface PipelineLog {
   id: string;
@@ -28,7 +28,6 @@ interface PipelineRun {
 
 export default function LogsPage() {
   const params = useParams();
-  const router = useRouter();
   const executionId = params.executionId as string;
 
   const [pipelineRun, setPipelineRun] = useState<PipelineRun | null>(null);
@@ -40,7 +39,7 @@ export default function LogsPage() {
       try {
         setIsLoading(true);
         const response = await fetch(
-          `http://localhost:3001/api/pipeline/executions/${executionId}/logs`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pipeline/executions/${executionId}/logs`
         );
 
         if (!response.ok) {
@@ -119,12 +118,6 @@ export default function LogsPage() {
         <div className="text-center">
           <div className="text-2xl mb-4">✗</div>
           <div className="mb-4">Error: {error}</div>
-          <button
-            onClick={() => router.back()}
-            className="text-gray-400 hover:text-green-400 transition-colors"
-          >
-            ← back
-          </button>
         </div>
       </div>
     );
@@ -136,12 +129,6 @@ export default function LogsPage() {
         <div className="text-center">
           <div className="text-2xl mb-4">⚠</div>
           <div className="mb-4">Pipeline execution not found</div>
-          <button
-            onClick={() => router.back()}
-            className="text-gray-400 hover:text-green-400 transition-colors"
-          >
-            ← back
-          </button>
         </div>
       </div>
     );
@@ -153,13 +140,6 @@ export default function LogsPage() {
         {/* Terminal Header */}
         <div className="bg-gray-900 border-b border-gray-800 px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.back()}
-              className="text-gray-400 hover:text-green-400 transition-colors"
-            >
-              ← back
-            </button>
-            <span className="text-gray-500">|</span>
             <span className="text-green-400">
               zipline@pipeline:~/{pipelineRun.repoName}
             </span>
@@ -208,7 +188,7 @@ export default function LogsPage() {
             </div>
           ) : (
             <div className="space-y-1">
-              {pipelineRun.logs.map((log, index) => (
+              {pipelineRun.logs.map((log) => (
                 <div
                   key={log.id}
                   className="flex items-start gap-3 text-sm leading-6"
@@ -224,7 +204,7 @@ export default function LogsPage() {
                     [{log.level.toUpperCase()}]
                   </span>
                   {log.step && (
-                    <span className="text-purple-400 w-20 flex-shrink-0">
+                    <span className="text-purple-400 w-40 flex-shrink-0">
                       [{log.step}]
                     </span>
                   )}

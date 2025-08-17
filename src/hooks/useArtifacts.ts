@@ -9,12 +9,6 @@ interface Artifact {
   fileName: string;
 }
 
-interface ArtifactsData {
-  executionId: string;
-  artifacts: Artifact[];
-  total: number;
-}
-
 export const useArtifacts = (executionId?: string) => {
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +20,7 @@ export const useArtifacts = (executionId?: string) => {
       setError(null);
 
       const response = await fetch(
-        `http://localhost:3001/api/artifacts/${execId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/artifacts/${execId}`
       );
 
       if (!response.ok) {
@@ -40,9 +34,11 @@ export const useArtifacts = (executionId?: string) => {
       } else {
         throw new Error(result.message || "Failed to load artifacts");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error fetching artifacts:", err);
-      setError(err.message);
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
       setArtifacts([]);
     } finally {
       setLoading(false);
@@ -56,7 +52,7 @@ export const useArtifacts = (executionId?: string) => {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/artifacts/${executionId}/${stepName}/${fileName}/download`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/artifacts/${executionId}/${stepName}/${fileName}/download`
       );
 
       if (!response.ok) {
@@ -71,7 +67,7 @@ export const useArtifacts = (executionId?: string) => {
       } else {
         throw new Error(result.message || "Failed to generate download URL");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error downloading artifact:", err);
       throw err;
     }

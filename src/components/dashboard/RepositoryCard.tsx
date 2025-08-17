@@ -1,5 +1,5 @@
 import { GitHubRepository } from "@/types";
-import { Card, Badge } from "@/components/ui";
+import { Card } from "@/components/ui";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -37,7 +37,7 @@ const RepositoryCard = ({
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/repositories/setup-webhook",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/repositories/setup-webhook`,
         {
           method: "POST",
           headers: {

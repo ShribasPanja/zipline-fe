@@ -1,6 +1,7 @@
 "use client"; // This component runs on the client
 
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 import {
   useAuth,
   useGitHubRepositories,
@@ -10,14 +11,13 @@ import {
 import {
   DashboardHeader,
   RepositoriesList,
-  NextStepsGuide,
   AuthenticationError,
   RecentActivities,
   PipelineExecutionsList,
 } from "@/components/dashboard";
 import { LoadingSpinner } from "@/components/ui";
 
-export default function DashboardPage() {
+function DashboardPageContent() {
   const router = useRouter();
   const { token, isLoading: authLoading, logout, isAuthenticated } = useAuth();
   const {
@@ -96,5 +96,19 @@ export default function DashboardPage() {
         {/* <NextStepsGuide /> */}
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
+          <LoadingSpinner text="Loading..." />
+        </div>
+      </div>
+    }>
+      <DashboardPageContent />
+    </Suspense>
   );
 }

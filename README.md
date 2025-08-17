@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zipline: Frontend Application
 
-## Getting Started
+<p align="center">
+  <img alt="Tech Stack" src="https://img.shields.io/badge/tech-Next.js%20%7C%20React%20%7C%20TypeScript-blue">
+</p>
 
-First, run the development server:
+This is the frontend for the Zipline CI/CD platform, a modern web application built with Next.js and React. It provides a dynamic and real-time interface for users to manage their repositories, view pipeline executions, and interact with their build workflows.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Core Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* **Live DAG Visualization:** Renders pipeline structures as an interactive graph using React Flow, with real-time status updates for each step.
+* **Real-time Log Streaming:** Displays log output from pipeline runners as it happens, using a WebSocket connection for immediate feedback.
+* **GitHub Authentication:** Securely logs in users via a GitHub OAuth flow.
+* **Repository Management:** Allows users to view and connect their GitHub repositories to the Zipline platform.
+* **Run History:** Provides a detailed view of all past and present pipeline runs for each repository.
+* **User Controls:** Includes UI elements for canceling running pipelines and re-running completed ones.
+* **Artifacts & Secrets:** Provides interfaces for downloading build artifacts and managing repository secrets.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+* **Framework:** Next.js (App Router)
+* **Language:** TypeScript
+* **UI Library:** React
+* **Graph Visualization:** React Flow
+* **Real-time Communication:** Socket.io
+* **Styling:** CSS Modules / Tailwind CSS (as applicable)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Getting Started
 
-## Deploy on Vercel
+### Prerequisites
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Node.js (v18+)
+* The Zipline backend server must be running.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Local Development
+
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Configure Environment Variables:**
+    Create a `.env` file by copying the `.env.example` file. Fill in the necessary values, such as the backend API URL.
+    ```
+    NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
+    ```
+
+3.  **Run the Development Server:**
+    ```bash
+    npm run dev
+    ```
+
+The frontend application should now be running at `http://localhost:3000`.
+

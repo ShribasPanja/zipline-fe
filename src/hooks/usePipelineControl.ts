@@ -5,14 +5,15 @@ import { useState } from "react";
 interface PipelineControlResult {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
 }
 
 export function usePipelineControl() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const API_BASE =
+    process.env.NEXT_PUBLIC_NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
   const cancelPipeline = async (
     executionId: string
@@ -42,8 +43,8 @@ export function usePipelineControl() {
         message: data.message,
         data: data.data,
       };
-    } catch (err: any) {
-      const errorMessage = err.message || "Failed to cancel pipeline";
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || "Failed to cancel pipeline";
       setError(errorMessage);
       return {
         success: false,
@@ -82,8 +83,8 @@ export function usePipelineControl() {
         message: data.message,
         data: data.data,
       };
-    } catch (err: any) {
-      const errorMessage = err.message || "Failed to rerun pipeline";
+    } catch (err: unknown) {
+      const errorMessage = (err as Error).message || "Failed to rerun pipeline";
       setError(errorMessage);
       return {
         success: false,

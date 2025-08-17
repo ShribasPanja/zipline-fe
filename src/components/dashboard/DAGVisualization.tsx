@@ -10,7 +10,6 @@ import ReactFlow, {
   useEdgesState,
   MiniMap,
   BackgroundVariant,
-  MarkerType,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -27,7 +26,18 @@ interface DAGData {
   totalSteps: number;
 }
 
-const CustomNode = ({ data }: { data: any }) => {
+interface NodeData {
+  label?: string;
+  image?: string;
+  dependencies?: string[];
+  commands?: string[];
+  status?: string;
+  isRoot?: boolean;
+  isLeaf?: boolean;
+  level?: number;
+}
+
+const CustomNode = ({ data }: { data: NodeData }) => {
   return (
     <div className="px-4 py-3 bg-gray-900 border-2 border-gray-700 rounded-lg text-green-400 font-mono text-sm min-w-[180px] shadow-lg">
       <div className="font-bold mb-2 text-cyan-400">{data.label}</div>
@@ -65,7 +75,7 @@ export default function DAGVisualization({
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:3001/api/pipeline/dag/${executionId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pipeline/dag/${executionId}`
         );
 
         if (!response.ok) {
@@ -81,9 +91,11 @@ export default function DAGVisualization({
         } else {
           throw new Error(result.message || "Failed to load DAG data");
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching DAG data:", err);
-        setError(err.message);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
         setLoading(false);
       }

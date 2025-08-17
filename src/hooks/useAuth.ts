@@ -1,23 +1,18 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 
 export const useAuth = () => {
-  const searchParams = useSearchParams();
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const accessToken = searchParams.get("token");
-
     if (typeof window !== "undefined") {
+      // Get token from URL params
       const urlParams = new URLSearchParams(window.location.search);
-      const windowToken = urlParams.get("token");
+      const urlToken = urlParams.get("token");
 
-      const finalToken = accessToken || windowToken;
-
-      if (finalToken) {
-        setToken(finalToken);
-        localStorage.setItem("github_token", finalToken);
+      if (urlToken) {
+        setToken(urlToken);
+        localStorage.setItem("github_token", urlToken);
 
         // Clean up URL by removing the token parameter
         const cleanUrl = window.location.pathname;
@@ -32,7 +27,7 @@ export const useAuth = () => {
     }
 
     setIsLoading(false);
-  }, [searchParams]);
+  }, []); // Empty dependency array - only run once on mount
 
   const logout = () => {
     setToken(null);

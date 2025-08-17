@@ -11,7 +11,7 @@ interface PipelineLog {
 
 interface PipelineStatus {
   status: "pending" | "running" | "success" | "failed";
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   timestamp: string;
 }
 
@@ -40,7 +40,7 @@ export const useSocket = (executionId?: string) => {
 
   useEffect(() => {
     // Initialize socket connection
-    const newSocket = io("http://localhost:3001", {
+    const newSocket = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`, {
       transports: ["websocket", "polling"],
       timeout: 20000,
       reconnection: true,

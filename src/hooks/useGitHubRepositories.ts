@@ -13,12 +13,15 @@ export const useGitHubRepositories = (token: string | null) => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3001/api/repositories", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/repositories`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Backend API error: ${response.status}`);

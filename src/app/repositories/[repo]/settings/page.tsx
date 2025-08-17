@@ -11,11 +11,7 @@ export default function RepositorySettingsPage() {
   // Decode the repository full name from URL params
   const repoFullName = decodeURIComponent(params.repo as string);
 
-  const tabs = [
-    { id: "secrets", label: "Secrets", icon: "🔐" },
-    { id: "general", label: "General", icon: "⚙️" },
-    { id: "webhooks", label: "Webhooks", icon: "🔗" },
-  ];
+  const tabs = [{ id: "secrets", label: "Secrets", icon: "🔐" }];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white p-8">
@@ -57,31 +53,7 @@ export default function RepositorySettingsPage() {
 
         {/* Tab Content */}
         <div className="min-h-[600px]">
-          {activeTab === "secrets" && (
-            <SecretsManager repoFullName={repoFullName} />
-          )}
-
-          {activeTab === "general" && (
-            <div className="bg-black/90 border border-gray-500/30 rounded-lg p-6">
-              <h2 className="text-xl font-bold text-gray-400 font-mono mb-4">
-                General Settings
-              </h2>
-              <div className="text-gray-500 font-mono">
-                General repository settings coming soon...
-              </div>
-            </div>
-          )}
-
-          {activeTab === "webhooks" && (
-            <div className="bg-black/90 border border-gray-500/30 rounded-lg p-6">
-              <h2 className="text-xl font-bold text-gray-400 font-mono mb-4">
-                Webhook Settings
-              </h2>
-              <div className="text-gray-500 font-mono">
-                Webhook configuration coming soon...
-              </div>
-            </div>
-          )}
+          <SecretsManager repoFullName={repoFullName} />
         </div>
 
         {/* Back Button */}

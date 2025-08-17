@@ -2,6 +2,7 @@ import { GitHubRepository } from "@/types";
 import { Button, LoadingSpinner } from "@/components/ui";
 import RepositoryCard from "./RepositoryCard";
 import { useWebhookStatuses } from "@/hooks";
+import { useMemo } from "react";
 
 interface RepositoriesListProps {
   repositories: GitHubRepository[];
@@ -18,7 +19,12 @@ const RepositoriesList = ({
   onRefresh,
   token,
 }: RepositoriesListProps) => {
-  const repoFullNames = repositories.map((repo) => repo.full_name);
+  // Memoize the repository full names to prevent unnecessary re-renders
+  const repoFullNames = useMemo(
+    () => repositories.map((repo) => repo.full_name),
+    [repositories]
+  );
+
   const {
     webhookStatuses,
     isLoading: webhooksLoading,

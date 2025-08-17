@@ -17,7 +17,6 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { useSocket } from "@/hooks";
 import { usePipelineControl } from "@/hooks/usePipelineControl";
-import { ArtifactsList } from "@/components/artifacts";
 import {
   SpinnerIcon,
   CheckIcon,
@@ -57,21 +56,27 @@ interface DAGData {
   };
 }
 
-interface StepStatus {
-  [stepName: string]: {
-    status: "pending" | "running" | "success" | "failed";
-    startTime?: string;
-    endTime?: string;
-    logs?: Array<{
-      id: string;
-      level: string;
-      message: string;
-      timestamp: string;
-    }>;
+interface NodeData {
+  status?: string;
+  name?: string;
+  type?: string;
+  label?: string;
+  commands?: string[];
+  image?: string;
+  dependencies?: string[];
+  isRoot?: boolean;
+  isLeaf?: boolean;
+  level?: number;
+  stepStatus?: {
+    metadata?: {
+      startTime?: string;
+      endTime?: string;
+      duration?: number;
+    };
   };
 }
 
-const CustomLiveNode = ({ data }: { data: any }) => {
+const CustomLiveNode = ({ data }: { data: NodeData }) => {
   const [expanded, setExpanded] = useState(false);
 
   // Get node status from data
@@ -267,10 +272,8 @@ export default function LiveDAGPage() {
   // Use pipeline control hook
   const {
     loading: controlLoading,
-    error: controlError,
     cancelPipeline,
     rerunPipeline,
-    clearError: clearControlError,
   } = usePipelineControl();
 
   // Check if any steps are currently running or pending
@@ -294,7 +297,6 @@ export default function LiveDAGPage() {
     }
 
     const stepStatusArray = Object.values(stepStatuses);
-    const totalSteps = stepStatusArray.length;
 
     // Check if any steps are running
     if (stepStatusArray.some((s) => s.status === "running")) {
@@ -364,9 +366,19 @@ export default function LiveDAGPage() {
           <span>{result.message}</span>
         </div>
       );
-      if (result.data?.newExecutionId) {
+      if (
+        result.data &&
+        typeof result.data === "object" &&
+        "newExecutionId" in result.data &&
+        typeof (result.data as { newExecutionId?: string }).newExecutionId ===
+          "string"
+      ) {
         setTimeout(() => {
-          router.push(`/dag/live/${result.data.newExecutionId}`);
+          router.push(
+            `/dag/live/${
+              (result.data as { newExecutionId: string }).newExecutionId
+            }`
+          );
         }, 2000);
       }
     } else {
@@ -431,7 +443,7 @@ export default function LiveDAGPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:3001/api/pipeline/dag/${executionId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pipeline/dag/${executionId}`
         );
 
         if (!response.ok) {
@@ -456,9 +468,11 @@ export default function LiveDAGPage() {
         } else {
           throw new Error(result.message || "Failed to load DAG data");
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching DAG data:", err);
-        setError(err.message);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
         setLoading(false);
       }
@@ -535,12 +549,6 @@ export default function LiveDAGPage() {
       {/* Header */}
       <div className="bg-gray-900 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-400 hover:text-green-400 transition-colors"
-          >
-            ← Back
-          </button>
           <div className="flex items-center gap-2">
             <div
               className={`w-3 h-3 rounded-full ${
@@ -558,15 +566,6 @@ export default function LiveDAGPage() {
               {actionMessage}
             </div>
           )}
-
-          {/* Debug Info - Remove in production */}
-          {/* {process.env.NODE_ENV === "development" && (
-            <div className="text-xs font-mono px-2 py-1 rounded bg-gray-900 border border-gray-500 text-gray-400">
-              Socket Status: {status?.status || "null"} | Overall:{" "}
-              {overallStatus} | Active Steps: {hasActiveSteps ? "yes" : "no"} |
-              Show Cancel: {shouldShowCancelButton ? "yes" : "no"}
-            </div>
-          )} */}
 
           {/* Pipeline Control Buttons */}
           <div className="flex items-center gap-2">
@@ -696,10 +695,19 @@ export default function LiveDAGPage() {
               <div className="flex justify-between">
                 <span className="text-gray-400">Pending:</span>
                 <span className="text-gray-400">
-                  {stepStatuses
-                    ? Object.values(stepStatuses).filter(
-                        (s) => s.status === "pending"
-                      ).length
+                  {stepStatuses && dagData
+                    ? Math.max(
+                        0,
+                        (dagData.stats?.totalSteps || dagData.totalSteps) -
+                          Object.values(stepStatuses).filter(
+                            (s) =>
+                              s.status === "running" ||
+                              s.status === "success" ||
+                              s.status === "failed"
+                          ).length
+                      )
+                    : dagData
+                    ? dagData.stats?.totalSteps || dagData.totalSteps
                     : 0}
                 </span>
               </div>
@@ -780,11 +788,6 @@ export default function LiveDAGPage() {
             )}
           </Panel>
         </ReactFlow>
-      </div>
-
-      {/* Artifacts Section */}
-      <div className="bg-gray-950 border-t border-gray-700 p-4">
-        <ArtifactsList executionId={executionId} isCollapsed={true} />
       </div>
 
       {/* Footer */}

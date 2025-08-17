@@ -14,26 +14,10 @@ interface PipelineExecutionsListProps {
 
 export const PipelineExecutionsList = ({
   executions,
-  stats,
   isLoading,
   error,
   onRefresh,
 }: PipelineExecutionsListProps) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "success":
-        return "text-green-400 bg-green-500/10 border-green-500/20";
-      case "failed":
-        return "text-red-400 bg-red-500/10 border-red-500/20";
-      case "in_progress":
-        return "text-yellow-400 bg-yellow-500/10 border-yellow-500/20";
-      case "queued":
-        return "text-gray-400 bg-gray-500/10 border-gray-500/20";
-      default:
-        return "text-gray-400 bg-gray-500/10 border-gray-500/20";
-    }
-  };
-
   const formatTimestamp = (timestamp: string) => {
     const date = new Date(timestamp);
     const now = new Date();
@@ -144,7 +128,7 @@ export const PipelineExecutionsList = ({
                     {formatTimestamp(execution.startedAt)}
                   </span>
                   <span
-                    className={`w-16 flex-shrink-0 ${
+                    className={`w-26 flex-shrink-0 ${
                       execution.status === "success"
                         ? "text-green-400"
                         : execution.status === "failed"

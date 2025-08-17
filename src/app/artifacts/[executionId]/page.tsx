@@ -1,11 +1,10 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { ArtifactsList } from "@/components/artifacts";
 
 export default function ArtifactsPage() {
   const params = useParams();
-  const router = useRouter();
   const executionId = params.executionId as string;
 
   return (
@@ -13,12 +12,6 @@ export default function ArtifactsPage() {
       {/* Header */}
       <div className="bg-gray-900 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-400 hover:text-green-400 transition-colors"
-          >
-            ← Back
-          </button>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-orange-400"></div>
             <span className="text-lg font-bold">Artifacts</span>

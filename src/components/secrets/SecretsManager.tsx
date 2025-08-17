@@ -175,7 +175,7 @@ export default function SecretsManager({ repoFullName }: SecretsManagerProps) {
             Existing Secrets ({secrets.length})
           </h3>
           <div className="space-y-2">
-            {secrets.map((secret, index) => (
+            {secrets.map((secret) => (
               <div
                 key={secret.key}
                 className="flex items-center justify-between p-3 bg-gray-900/50 border border-gray-600/30 rounded"

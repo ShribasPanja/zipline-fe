@@ -41,7 +41,18 @@ interface DAGData {
   };
 }
 
-const CustomNode = ({ data }: { data: any }) => {
+interface NodeData {
+  label?: string;
+  commands?: string[];
+  image?: string;
+  dependencies?: string[];
+  isRoot?: boolean;
+  isLeaf?: boolean;
+  level?: number;
+  status?: string;
+}
+
+const CustomNode = ({ data }: { data: NodeData }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -139,7 +150,7 @@ export default function DAGPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:3001/api/pipeline/dag/${executionId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pipeline/dag/${executionId}`
         );
 
         if (!response.ok) {
@@ -155,9 +166,11 @@ export default function DAGPage() {
         } else {
           throw new Error(result.message || "Failed to load DAG data");
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching DAG data:", err);
-        setError(err.message);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
       } finally {
         setLoading(false);
       }
@@ -209,12 +222,6 @@ export default function DAGPage() {
       {/* Header */}
       <div className="bg-gray-900 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-400 hover:text-green-400 transition-colors"
-          >
-            ← Back
-          </button>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-400"></div>
             <span className="text-lg font-bold">DAG Visualization</span>

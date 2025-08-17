@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface Activity {
   id: string;
@@ -21,7 +21,11 @@ export interface Activity {
     email: string;
   };
   status: "success" | "failed" | "in_progress";
-  metadata?: Record<string, any>;
+  metadata?: {
+    executionId?: string;
+    duration?: string | number;
+    [key: string]: unknown;
+  };
 }
 
 export const useActivities = (token: string | null, limit: number = 10) => {
@@ -29,7 +33,7 @@ export const useActivities = (token: string | null, limit: number = 10) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     if (!token) return;
 
     setIsLoading(true);
@@ -37,7 +41,7 @@ export const useActivities = (token: string | null, limit: number = 10) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/activities/recent?limit=${limit}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/activities/recent?limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,11 +63,11 @@ export const useActivities = (token: string | null, limit: number = 10) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token, limit]);
 
   useEffect(() => {
     fetchActivities();
-  }, [token, limit]);
+  }, [fetchActivities]);
 
   const refetch = () => {
     fetchActivities();

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface PipelineExecution {
   id: string;
@@ -32,7 +32,7 @@ export const usePipelineExecutions = (
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchExecutions = async () => {
+  const fetchExecutions = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -42,7 +42,9 @@ export const usePipelineExecutions = (
       if (limit) params.append("limit", limit.toString());
 
       const response = await fetch(
-        `http://localhost:3001/api/pipeline/executions?${params.toString()}`
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL
+        }/api/pipeline/executions?${params.toString()}`
       );
 
       if (!response.ok) {
@@ -61,11 +63,11 @@ export const usePipelineExecutions = (
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [repoName, limit]);
 
   useEffect(() => {
     fetchExecutions();
-  }, [repoName, limit]);
+  }, [fetchExecutions]);
 
   const refetch = () => {
     fetchExecutions();

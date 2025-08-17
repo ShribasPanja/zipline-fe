@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface WebhookStatuses {
   [repoFullName: string]: boolean;
@@ -11,44 +11,51 @@ export const useWebhookStatuses = (
   const [webhookStatuses, setWebhookStatuses] = useState<WebhookStatuses>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const previousRepositoriesRef = useRef<string>("");
 
-  const fetchWebhookStatuses = async (repoList?: string[]) => {
-    if (!token || (!repoList && repositories.length === 0)) return;
+  const fetchWebhookStatuses = useCallback(
+    async (repoList: string[]) => {
+      if (!token || repoList.length === 0) return;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const reposToCheck = repoList || repositories;
-      const repoParams = reposToCheck.join(",");
+      try {
+        const repoParams = repoList.join(",");
 
-      const response = await fetch(
-        `http://localhost:3001/api/repositories/webhook-status?repositories=${encodeURIComponent(
-          repoParams
-        )}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+        const response = await fetch(
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL
+          }/api/repositories/webhook-status?repositories=${encodeURIComponent(
+            repoParams
+          )}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch webhook statuses");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch webhook statuses");
+        const result = await response.json();
+        setWebhookStatuses(result.data || {});
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch webhook statuses"
+        );
+        console.error("Error fetching webhook statuses:", err);
+      } finally {
+        setIsLoading(false);
       }
-
-      const result = await response.json();
-      setWebhookStatuses(result.data || {});
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch webhook statuses"
-      );
-      console.error("Error fetching webhook statuses:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [token] // Only depend on token
+  );
 
   const checkSingleRepository = async (
     repoFullName: string
@@ -57,7 +64,9 @@ export const useWebhookStatuses = (
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/repositories/webhook-status?repoFullName=${encodeURIComponent(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL
+        }/api/repositories/webhook-status?repoFullName=${encodeURIComponent(
           repoFullName
         )}`,
         {
@@ -96,13 +105,25 @@ export const useWebhookStatuses = (
   };
 
   useEffect(() => {
-    if (repositories.length > 0) {
-      fetchWebhookStatuses();
+    // Create a stable string representation of repositories to compare
+    const currentRepositoriesString = repositories.sort().join(",");
+
+    // Only fetch if repositories have actually changed and we have a token
+    if (
+      token &&
+      repositories.length > 0 &&
+      currentRepositoriesString !== previousRepositoriesRef.current
+    ) {
+      previousRepositoriesRef.current = currentRepositoriesString;
+      fetchWebhookStatuses(repositories);
     }
-  }, [token, repositories.join(",")]);
+  }, [token, repositories, fetchWebhookStatuses]);
 
   const refetch = (repoList?: string[]) => {
-    fetchWebhookStatuses(repoList);
+    const reposToUse = repoList || repositories;
+    if (reposToUse.length > 0) {
+      fetchWebhookStatuses(reposToUse);
+    }
   };
 
   return {

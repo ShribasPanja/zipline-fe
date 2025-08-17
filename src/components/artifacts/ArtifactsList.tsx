@@ -20,7 +20,7 @@ const ArtifactsList = ({
     try {
       setDownloading(downloadKey);
       await downloadArtifact(executionId, stepName, fileName);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Download failed:", error);
       // Could show toast notification here
     } finally {
