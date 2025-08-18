@@ -41,9 +41,12 @@ export default function Home() {
   }, [showCursor]);
 
   return (
-    <div className="min-h-screen bg-black text-green-400 font-mono relative overflow-x-hidden">
+    <div
+      className="min-h-[100dvh] bg-black text-green-400 font-mono relative overflow-x-hidden overscroll-y-contain touch-pan-y"
+      style={{ WebkitOverflowScrolling: "touch" }}
+    >
       {/* Matrix-style background animation */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="matrix-bg h-full w-full"></div>
       </div>
 
@@ -119,7 +122,7 @@ export default function Home() {
             </div>
 
             {/* CTA Button */}
-            <div className="flex justify-center lg:justify-start">
+            <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4">
               <button
                 className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-green-600 hover:bg-green-700 text-black rounded-lg transition-all duration-300 font-semibold shadow-lg transform hover:scale-105 group text-sm sm:text-base"
                 onClick={() => {
@@ -137,6 +140,35 @@ export default function Home() {
                 </svg>
                 <span className="hidden sm:inline">Connect with GitHub</span>
                 <span className="sm:hidden">Connect GitHub</span>
+                <span className="ml-1 sm:ml-2 group-hover:translate-x-1 transition-transform duration-300">
+                  →
+                </span>
+              </button>
+
+              {/* Guide Button */}
+              <button
+                className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gray-800 hover:bg-gray-700 text-green-400 border border-green-600 hover:border-green-500 rounded-lg transition-all duration-300 font-semibold shadow-lg transform hover:scale-105 group text-sm sm:text-base"
+                onClick={() => {
+                  window.location.href = "/guide";
+                }}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  className="group-hover:scale-110 transition-transform duration-300 sm:w-6 sm:h-6"
+                >
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  <path d="M9 6h6" />
+                  <path d="M9 10h6" />
+                  <path d="M9 14h6" />
+                </svg>
+                <span className="hidden sm:inline">Read the Guide</span>
+                <span className="sm:hidden">Guide</span>
                 <span className="ml-1 sm:ml-2 group-hover:translate-x-1 transition-transform duration-300">
                   →
                 </span>
@@ -299,14 +331,17 @@ export default function Home() {
           );
           background-size: 20px 20px;
           animation: matrix-scroll 20s linear infinite;
+          background-repeat: repeat;
+          will-change: background-position;
+          pointer-events: none; /* prevent background from capturing touches */
         }
 
         @keyframes matrix-scroll {
           0% {
-            transform: translateY(0);
+            background-position-y: 0;
           }
           100% {
-            transform: translateY(20px);
+            background-position-y: 20px;
           }
         }
       `}</style>

@@ -27,7 +27,7 @@ export default function RepositorySettingsPage() {
             Repository Settings
           </h1>
           <p className="text-gray-400 font-mono mt-2">
-            Configure secrets, webhooks, and other repository-specific settings
+            Configure secrets
           </p>
         </div>
 
