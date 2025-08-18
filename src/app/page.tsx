@@ -41,31 +41,31 @@ export default function Home() {
   }, [showCursor]);
 
   return (
-    <div className="h-screen bg-black text-green-400 font-mono relative overflow-hidden flex items-center">
+    <div className="min-h-screen bg-black text-green-400 font-mono relative overflow-x-hidden">
       {/* Matrix-style background animation */}
       <div className="absolute inset-0 opacity-5">
         <div className="matrix-bg h-full w-full"></div>
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 w-full px-8">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-0">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-16 items-center lg:min-h-screen">
           {/* Left side - Terminal and Info */}
-          <div className="space-y-8">
+          <div className="space-y-6 lg:space-y-8 order-1 lg:order-1">
             {/* Terminal Window */}
             <div className="bg-gray-900 rounded-lg border border-gray-700 shadow-2xl overflow-hidden">
-              <div className="bg-gray-800 px-4 py-2 flex items-center gap-2">
+              <div className="bg-gray-800 px-3 sm:px-4 py-2 flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                 <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="ml-4 text-gray-400 text-sm">
+                <span className="ml-2 sm:ml-4 text-gray-400 text-xs sm:text-sm">
                   zipline-terminal
                 </span>
               </div>
 
-              <div className="p-6 h-66">
+              <div className="p-4 sm:p-6 h-48 sm:h-56 lg:h-66">
                 {terminalLines.slice(0, currentLine).map((line, index) => (
-                  <div key={index} className="mb-2 text-sm">
+                  <div key={index} className="mb-1 sm:mb-2 text-xs sm:text-sm">
                     <span
                       className={
                         line.startsWith("$")
@@ -78,7 +78,7 @@ export default function Home() {
                   </div>
                 ))}
                 {currentLine < terminalLines.length && (
-                  <div className="mb-2 text-sm">
+                  <div className="mb-1 sm:mb-2 text-xs sm:text-sm">
                     <span
                       className={
                         terminalLines[currentLine]?.startsWith("$")
@@ -101,17 +101,17 @@ export default function Home() {
             </div>
 
             {/* Hero Text */}
-            <div className="space-y-6">
-              <h1 className="text-5xl lg:text-7xl font-bold text-blue-400">
+            <div className="space-y-4 lg:space-y-6 text-center lg:text-left">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-blue-400 leading-tight">
                 ZIPLINE CI/CD
               </h1>
-              <p className="text-xl text-gray-300 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed">
                 Modern DevOps Platform with{" "}
                 <span className="text-green-400 font-semibold">
                   DAG Pipeline Orchestration
                 </span>
               </p>
-              <p className="text-gray-400 text-lg leading-relaxed">
+              <p className="text-sm sm:text-base lg:text-lg text-gray-400 leading-relaxed">
                 Streamline your development workflow with intelligent pipeline
                 management, real-time monitoring, and enterprise-grade
                 automation.
@@ -119,37 +119,40 @@ export default function Home() {
             </div>
 
             {/* CTA Button */}
-            <button
-              className="inline-flex items-center gap-3 px-8 py-4 bg-green-600 hover:bg-green-700 text-black rounded-lg transition-all duration-300 font-semibold shadow-lg transform hover:scale-105 group"
-              onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github`;
-              }}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="group-hover:rotate-12 transition-transform duration-300"
+            <div className="flex justify-center lg:justify-start">
+              <button
+                className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-green-600 hover:bg-green-700 text-black rounded-lg transition-all duration-300 font-semibold shadow-lg transform hover:scale-105 group text-sm sm:text-base"
+                onClick={() => {
+                  window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github`;
+                }}
               >
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-              </svg>
-              Connect with GitHub
-              <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">
-                →
-              </span>
-            </button>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="group-hover:rotate-12 transition-transform duration-300 sm:w-6 sm:h-6"
+                >
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+                <span className="hidden sm:inline">Connect with GitHub</span>
+                <span className="sm:hidden">Connect GitHub</span>
+                <span className="ml-1 sm:ml-2 group-hover:translate-x-1 transition-transform duration-300">
+                  →
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Right side - Features and Code */}
-          <div className="space-y-8 flex flex-col justify-center">
+          <div className="space-y-6 lg:space-y-8 flex flex-col justify-center order-2 lg:order-2">
             {/* Features Grid */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               {[
                 {
                   icon: (
                     <svg
-                      className="w-8 h-8"
+                      className="w-6 h-6 sm:w-8 sm:h-8"
                       viewBox="0 0 640 640"
                       fill="currentColor"
                       xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +167,7 @@ export default function Home() {
                 {
                   icon: (
                     <svg
-                      className="w-8 h-8"
+                      className="w-6 h-6 sm:w-8 sm:h-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -184,7 +187,7 @@ export default function Home() {
                 {
                   icon: (
                     <svg
-                      className="w-8 h-8"
+                      className="w-6 h-6 sm:w-8 sm:h-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -204,7 +207,7 @@ export default function Home() {
                 {
                   icon: (
                     <svg
-                      className="w-8 h-8"
+                      className="w-6 h-6 sm:w-8 sm:h-8"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -224,15 +227,15 @@ export default function Home() {
               ].map((feature, index) => (
                 <div
                   key={index}
-                  className="bg-gray-900 rounded-lg border border-gray-700 p-6 hover:border-green-500 transition-all duration-300 group hover:scale-105"
+                  className="bg-gray-900 rounded-lg border border-gray-700 p-4 sm:p-6 hover:border-green-500 transition-all duration-300 group hover:scale-105"
                 >
-                  <div className="text-green-400 mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="text-green-400 mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
                     {feature.icon}
                   </div>
-                  <h3 className="text-lg font-semibold text-green-400 mb-3">
+                  <h3 className="text-base sm:text-lg font-semibold text-green-400 mb-2 sm:mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -240,10 +243,10 @@ export default function Home() {
             </div>
 
             {/* Additional Features */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 text-center hover:border-green-500 transition-all duration-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 sm:p-4 text-center hover:border-green-500 transition-all duration-300">
                 <svg
-                  className="w-6 h-6 text-green-400 mx-auto mb-2"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -255,7 +258,7 @@ export default function Home() {
                     d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                   />
                 </svg>
-                <div className="text-sm font-semibold text-green-400 mb-1">
+                <div className="text-xs sm:text-sm font-semibold text-green-400 mb-1">
                   Secure Secrets
                 </div>
                 <div className="text-xs text-gray-400">
@@ -263,9 +266,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-gray-900 rounded-lg border border-gray-700 p-4 text-center hover:border-green-500 transition-all duration-300">
+              <div className="bg-gray-900 rounded-lg border border-gray-700 p-3 sm:p-4 text-center hover:border-green-500 transition-all duration-300">
                 <svg
-                  className="w-6 h-6 text-green-400 mx-auto mb-2"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 mx-auto mb-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -277,7 +280,7 @@ export default function Home() {
                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                   />
                 </svg>
-                <div className="text-sm font-semibold text-green-400 mb-1">
+                <div className="text-xs sm:text-sm font-semibold text-green-400 mb-1">
                   GitHub Integration
                 </div>
                 <div className="text-xs text-gray-400">Seamless webhooks</div>
