@@ -4,7 +4,6 @@ import { useState } from "react";
 // Reusable CodeBlock component with copy functionality
 const CodeBlock = ({
   code,
-  language = "yaml",
   title,
 }: {
   code: string;
@@ -166,16 +165,16 @@ const content = {
         </h3>
         <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
           <p className="text-gray-300 mb-3">
-            Click the "Connect with GitHub" button on the homepage to authorize
+            Click the &ldquo;Connect with GitHub&rdquo; button on the homepage to authorize
             Zipline:
           </p>
           <div className="bg-black rounded p-3 font-mono text-sm text-green-400">
             → Navigate to Zipline homepage
             <br />
-            → Click "Connect with GitHub"
+            → Click &ldquo;Connect with GitHub&rdquo;
             <br />
             → Authorize application access
-            <br />→ You'll be redirected to the dashboard
+            <br />→ You&rsquo;ll be redirected to the dashboard
           </div>
         </div>
 
@@ -242,7 +241,7 @@ const content = {
         <div className="bg-yellow-900/20 border border-yellow-500 rounded-lg p-4">
           <h4 className="text-yellow-400 font-semibold mb-2">Important Note</h4>
           <p className="text-gray-300">
-            Ensure your repository is public or that you've granted the
+            Ensure your repository is public or that you&rsquo;ve granted the
             necessary permissions for Zipline to access private repositories
             during the OAuth setup.
           </p>
@@ -374,7 +373,7 @@ steps:
               execution order
             </li>
             <li>
-              • <strong>Failure Isolation:</strong> Failed steps don't block
+              • <strong>Failure Isolation:</strong> Failed steps don&rsquo;t block
               independent paths
             </li>
             <li>
@@ -535,7 +534,7 @@ steps:
           Simple Node.js DAG Pipeline
         </h3>
         <p className="text-gray-300">
-          Here's a simple Node.js pipeline that demonstrates DAG concepts with
+          Here&rsquo;s a simple Node.js pipeline that demonstrates DAG concepts with
           parallel execution:
         </p>
 
@@ -1061,7 +1060,7 @@ CMD ["npm", "start"]`}
         </h3>
         <p className="text-gray-300 leading-relaxed">
           Secrets are encrypted key-value pairs used to store sensitive
-          information like API keys, passwords, and tokens. They're securely
+          information like API keys, passwords, and tokens. They&rsquo;re securely
           injected into pipeline environments without exposing values in logs or
           configurations.
         </p>
@@ -1073,8 +1072,8 @@ CMD ["npm", "start"]`}
           </p>
           <ol className="text-gray-300 space-y-1 text-sm">
             <li>1. Navigate to Repository Settings</li>
-            <li>2. Go to "Secrets" section</li>
-            <li>3. Click "Add Secret"</li>
+            <li>2. Go to &ldquo;Secrets&rdquo; section</li>
+            <li>3. Click &ldquo;Add Secret&rdquo;</li>
             <li>4. Enter name and value</li>
             <li>5. Save the secret</li>
           </ol>
@@ -1157,7 +1156,7 @@ steps:
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-red-900/20 border border-red-500 rounded-lg p-4">
-            <h4 className="text-red-400 font-semibold mb-2">❌ Don't</h4>
+            <h4 className="text-red-400 font-semibold mb-2">❌ Don&rsquo;t</h4>
             <ul className="text-gray-300 space-y-1 text-sm">
               <li>• Hard-code secrets in YAML files</li>
               <li>• Echo secrets in commands</li>
@@ -1242,7 +1241,7 @@ steps:
           <h4 className="text-green-400 mb-2">Features:</h4>
           <ul className="text-gray-300 space-y-2">
             <li>
-              • <strong>Real-time streaming:</strong> Watch logs as they're
+              • <strong>Real-time streaming:</strong> Watch logs as they&rsquo;re
               generated
             </li>
             <li>
