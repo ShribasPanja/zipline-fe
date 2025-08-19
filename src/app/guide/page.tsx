@@ -90,9 +90,7 @@ const sidebarSections = [
   {
     title: "Examples",
     items: [
-      { id: "nodejs-example", title: "Node.js Pipeline" },
-      { id: "python-example", title: "Python Pipeline" },
-      { id: "docker-example", title: "Docker Pipeline" },
+      { id: "nodejs-example", title: "Complete Pipeline Example" },
     ],
   },
   {
@@ -527,411 +525,206 @@ steps:
   },
 
   "nodejs-example": {
-    title: "Node.js Pipeline Example",
+    title: "Complete Pipeline Example",
     content: (
       <div className="space-y-6">
         <h3 className="text-xl font-semibold text-green-400">
-          Simple Node.js DAG Pipeline
+          Website Build and Deploy Pipeline
         </h3>
         <p className="text-gray-300">
-          Here&rsquo;s a simple Node.js pipeline that demonstrates DAG concepts
-          with parallel execution:
+          This example demonstrates a complete CI/CD pipeline that builds, tests, 
+          and deploys a web application with proper dependency management and 
+          artifact handling.
         </p>
 
         <CodeBlock
           title=".zipline/pipeline.yml"
-          code={`name: "Node.js Simple Pipeline"
-description: "Install, test, and build in parallel"
+          code={`name: "Website Build and Deploy Pipeline"
+description: "A full CI/CD pipeline that builds, tests, and deploys a web application."
 
-branches:
-  include:
-    - main
-    - "feature/*"
-
-environment:
-  NODE_ENV: production
-
-steps:
-  # Step 1: Install dependencies (runs first)
-  install:
-    name: "Install Dependencies"
-    commands:
-      - "npm ci"
-    artifacts:
-      paths:
-        - "node_modules/**"
-      retention_days: 1
-
-  # Step 2: Run tests (depends on install)
-  test:
-    name: "Run Tests"
-    commands:
-      - "npm test"
-    depends_on:
-      - install
-
-  # Step 3: Lint code (depends on install, runs parallel with test)
-  lint:
-    name: "Lint Code"
-    commands:
-      - "npm run lint"
-    depends_on:
-      - install
-
-  # Step 4: Build app (waits for both test and lint)
-  build:
-    name: "Build Application"
-    commands:
-      - "npm run build"
-    depends_on:
-      - test
-      - lint
-    artifacts:
-      paths:
-        - "dist/**"
-      retention_days: 30
-
-  # Step 5: Deploy (runs after build)
-  deploy:
-    name: "Deploy to Production"
-    commands:
-      - "npm run deploy"
-    depends_on:
-      - build
-    environment:
-      DEPLOY_KEY: \${SECRET_DEPLOY_KEY}`}
-        />
-
-        <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
-          <h4 className="text-blue-400 font-semibold mb-2">
-            DAG Execution Flow
-          </h4>
-          <div className="space-y-2 text-sm text-gray-300">
-            <p>This pipeline creates the following execution flow:</p>
-            <div className="bg-black rounded p-3 font-mono text-xs text-green-400">
-              install
-              <br />
-              ├── test (parallel)
-              <br />
-              └── lint (parallel)
-              <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;└── build (waits for both)
-              <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── deploy
-            </div>
-            <p>
-              <strong>Benefits:</strong> Test and lint run simultaneously,
-              saving time!
-            </p>
-          </div>
-        </div>
-
-        <h3 className="text-xl font-semibold text-green-400">
-          Required package.json Scripts
-        </h3>
-        <CodeBlock
-          title="package.json"
-          language="json"
-          code={`{
-  "scripts": {
-    "test": "jest",
-    "lint": "eslint src/",
-    "build": "webpack --mode=production",
-    "deploy": "your-deploy-command"
-  }
-}`}
-        />
-      </div>
-    ),
-  },
-
-  "python-example": {
-    title: "Python Pipeline Example",
-    content: (
-      <div className="space-y-6">
-        <h3 className="text-xl font-semibold text-green-400">
-          Simple Python DAG Pipeline
-        </h3>
-        <p className="text-gray-300">
-          Example pipeline for a Python application demonstrating parallel
-          testing and quality checks:
-        </p>
-
-        <CodeBlock
-          title=".zipline/pipeline.yml"
-          code={`name: "Python Simple Pipeline"
-description: "Test, lint, and package Python application"
-
-branches:
-  include:
-    - main
-    - "feature/*"
-
-environment:
-  PYTHONPATH: "."
-
-steps:
-  # Step 1: Setup and install (runs first)
-  setup:
-    name: "Setup Environment"
-    commands:
-      - "python --version"
-      - "pip install -r requirements.txt"
-      - "pip install -r requirements-dev.txt"
-
-  # Step 2: Run tests (depends on setup)
-  test:
-    name: "Run Tests"
-    commands:
-      - "pytest tests/ --cov=src --cov-report=html"
-    depends_on:
-      - setup
-    artifacts:
-      paths:
-        - "htmlcov/**"
-      retention_days: 7
-
-  # Step 3: Lint code (parallel with test)
-  lint:
-    name: "Lint Code"
-    commands:
-      - "flake8 src/ tests/"
-      - "black --check src/ tests/"
-    depends_on:
-      - setup
-
-  # Step 4: Type check (parallel with test and lint)
-  typecheck:
-    name: "Type Checking"
-    commands:
-      - "mypy src/"
-    depends_on:
-      - setup
-
-  # Step 5: Build package (waits for all quality checks)
-  build:
-    name: "Build Package"
-    commands:
-      - "python setup.py sdist bdist_wheel"
-    depends_on:
-      - test
-      - lint
-      - typecheck
-    artifacts:
-      paths:
-        - "dist/**"
-      retention_days: 30
-
-  # Step 6: Deploy to PyPI (production only)
-  deploy:
-    name: "Deploy to PyPI"
-    commands:
-      - "twine upload dist/*"
-    depends_on:
-      - build
-    environment:
-      TWINE_TOKEN: \${SECRET_PYPI_TOKEN}`}
-        />
-
-        <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
-          <h4 className="text-blue-400 font-semibold mb-2">
-            DAG Execution Flow
-          </h4>
-          <div className="space-y-2 text-sm text-gray-300">
-            <p>This pipeline creates the following execution flow:</p>
-            <div className="bg-black rounded p-3 font-mono text-xs text-green-400">
-              setup
-              <br />
-              ├── test (parallel)
-              <br />
-              ├── lint (parallel)
-              <br />
-              └── typecheck (parallel)
-              <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;└── build (waits for all)
-              <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── deploy
-            </div>
-            <p>
-              <strong>Benefits:</strong> Test, lint, and typecheck run
-              simultaneously!
-            </p>
-          </div>
-        </div>
-
-        <h3 className="text-xl font-semibold text-green-400">Required Files</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          <CodeBlock
-            title="requirements.txt"
-            code={`flask==2.3.2
-requests==2.31.0
-sqlalchemy==2.0.19`}
-          />
-
-          <CodeBlock
-            title="requirements-dev.txt"
-            code={`pytest==7.4.0
-pytest-cov==4.1.0
-flake8==6.0.0
-black==23.7.0
-mypy==1.5.0
-twine==4.0.2`}
-          />
-        </div>
-      </div>
-    ),
-  },
-
-  "docker-example": {
-    title: "Docker Pipeline Example",
-    content: (
-      <div className="space-y-6">
-        <h3 className="text-xl font-semibold text-green-400">
-          Simple Docker DAG Pipeline
-        </h3>
-        <p className="text-gray-300">
-          Example pipeline that builds and tests Docker images with parallel
-          execution:
-        </p>
-
-        <CodeBlock
-          title=".zipline/pipeline.yml"
-          code={`name: "Docker Simple Pipeline"
-description: "Build, test, and deploy Docker application"
-
-branches:
-  include:
-    - main
-    - "feature/*"
-
-environment:
-  IMAGE_NAME: "myapp"
-  REGISTRY: "docker.io"
-
-steps:
-  # Step 1: Validate Dockerfile
-  validate:
-    name: "Validate Dockerfile"
-    commands:
-      - "docker --version"
-      - "hadolint Dockerfile"
-
-  # Step 2: Build base image
-  build:
-    name: "Build Docker Image"
-    commands:
-      - "docker build -t \${IMAGE_NAME}:latest ."
-    depends_on:
-      - validate
-
-  # Step 3: Test image (parallel with security scan)
-  test:
-    name: "Test Docker Image"
-    commands:
-      - "docker run --rm \${IMAGE_NAME}:latest npm test"
-    depends_on:
-      - build
-
-  # Step 4: Security scan (parallel with test)
-  scan:
-    name: "Security Scan"
-    commands:
-      - "trivy image \${IMAGE_NAME}:latest"
-    depends_on:
-      - build
-
-  # Step 5: Tag and push (waits for both test and scan)
+# This pipeline will only run on pushes to the 'main' branch.
+on:
   push:
-    name: "Push to Registry"
-    commands:
-      - "docker tag \${IMAGE_NAME}:latest \${REGISTRY}/username/\${IMAGE_NAME}:latest"
-      - "docker tag \${IMAGE_NAME}:latest \${REGISTRY}/username/\${IMAGE_NAME}:\${ZIPLINE_COMMIT_SHA:0:8}"
-      - "echo \${SECRET_DOCKER_PASSWORD} | docker login \${REGISTRY} -u \${SECRET_DOCKER_USERNAME} --password-stdin"
-      - "docker push \${REGISTRY}/username/\${IMAGE_NAME}:latest"
-      - "docker push \${REGISTRY}/username/\${IMAGE_NAME}:\${ZIPLINE_COMMIT_SHA:0:8}"
-    depends_on:
-      - test
-      - scan
-    environment:
-      DOCKER_USERNAME: \${SECRET_DOCKER_USERNAME}
-      DOCKER_PASSWORD: \${SECRET_DOCKER_PASSWORD}
+    branches:
+      - main
 
-  # Step 6: Deploy
-  deploy:
-    name: "Deploy Application"
-    commands:
-      - "kubectl set image deployment/\${IMAGE_NAME} \${IMAGE_NAME}=\${REGISTRY}/username/\${IMAGE_NAME}:\${ZIPLINE_COMMIT_SHA:0:8}"
-      - "kubectl rollout status deployment/\${IMAGE_NAME}"
-    depends_on:
-      - push
-    environment:
-      KUBECONFIG: \${SECRET_KUBECONFIG}`}
+steps:
+  # --- Stage 1: Initial Checks (Run in Parallel) ---
+  - name: "A - Lint Code"
+    image: "node:18-alpine"
+    run: |
+      echo "Running linters..."
+      # In a real project, this would be: npm install && npm run lint
+      sleep 10
+      echo "Linting complete."
+
+  - name: "B - Run Unit Tests"
+    image: "node:18-alpine"
+    run: |
+      echo "Running unit tests..."
+      # In a real project, this would be: npm install && npm test
+      sleep 15
+      echo "Unit tests passed."
+
+  # --- Stage 2: Build (Waits for checks, produces artifact) ---
+  - name: "C - Build Application"
+    needs:
+      - "A - Lint Code"
+      - "B - Run Unit Tests"
+    image: "node:18-alpine"
+    run: |
+      echo "All checks passed. Building application..."
+      # Simulate creating a build output directory
+      mkdir -p ./dist
+      echo "<html><body><h1>Hello, Zipline!</h1></body></html>" > ./dist/index.html
+      echo "Application built successfully."
+    artifacts:
+      name: "website-build"
+      paths:
+        - "./dist"
+
+  # --- Stage 3: Deploy (Final step) ---
+  - name: "D - Deploy to Production"
+    needs:
+      - "C - Build Application"
+    image: "alpine:latest"
+    secrets:
+      - "DEPLOYMENT_TOKEN"
+    run: |
+      echo "Deploying to production server..."
+      if [ -z "$DEPLOYMENT_TOKEN" ]; then
+        echo "Error: DEPLOYMENT_TOKEN secret is not set."
+        exit 1
+      else
+        echo "Authentication successful. Deployment starting..."
+        sleep 10
+        echo "🚀 Successfully deployed to production!"
+      fi`}
         />
 
         <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
           <h4 className="text-blue-400 font-semibold mb-2">
-            DAG Execution Flow
+            Pipeline Execution Flow
           </h4>
           <div className="space-y-2 text-sm text-gray-300">
             <p>This pipeline creates the following execution flow:</p>
             <div className="bg-black rounded p-3 font-mono text-xs text-green-400">
-              validate
+              Stage 1 (Parallel):
               <br />
-              └── build
+              ├── A - Lint Code
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;├── test (parallel)
+              └── B - Run Unit Tests
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;└── scan (parallel)
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── push (waits
-              for both)
+              Stage 2 (After Stage 1):
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──
-              deploy
+              └── C - Build Application
+              <br />
+              <br />
+              Stage 3 (After Stage 2):
+              <br />
+              └── D - Deploy to Production
             </div>
             <p>
-              <strong>Benefits:</strong> Test and security scan run
-              simultaneously!
+              <strong>Benefits:</strong> Linting and testing run simultaneously 
+              to save time, while build waits for both quality checks to pass.
             </p>
           </div>
         </div>
 
         <h3 className="text-xl font-semibold text-green-400">
-          Simple Multi-stage Dockerfile
+          Key Pipeline Features Explained
         </h3>
-        <CodeBlock
-          title="Dockerfile"
-          language="dockerfile"
-          code={`FROM node:18-alpine
-WORKDIR /app
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <h4 className="text-green-400 font-semibold mb-2">Branch Filtering</h4>
+            <p className="text-gray-300 text-sm mb-2">
+              The <code>on.push.branches</code> section ensures this pipeline 
+              only runs on the main branch:
+            </p>
+            <pre className="text-xs text-gray-300 bg-black rounded p-2">
+{`on:
+  push:
+    branches:
+      - main`}
+            </pre>
+          </div>
 
-# Copy package files
-COPY package*.json ./
-RUN npm ci --only=production
+          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <h4 className="text-green-400 font-semibold mb-2">Parallel Execution</h4>
+            <p className="text-gray-300 text-sm mb-2">
+              Steps A and B run simultaneously because they have no dependencies:
+            </p>
+            <pre className="text-xs text-gray-300 bg-black rounded p-2">
+{`- name: "A - Lint Code"
+  # No 'needs' = runs immediately
 
-# Copy source code
-COPY . .
+- name: "B - Run Unit Tests"  
+  # No 'needs' = runs immediately`}
+            </pre>
+          </div>
 
-# Build application
-RUN npm run build
+          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <h4 className="text-green-400 font-semibold mb-2">Dependencies</h4>
+            <p className="text-gray-300 text-sm mb-2">
+              The <code>needs</code> field creates dependencies between steps:
+            </p>
+            <pre className="text-xs text-gray-300 bg-black rounded p-2">
+{`- name: "C - Build Application"
+  needs:
+    - "A - Lint Code"
+    - "B - Run Unit Tests"`}
+            </pre>
+          </div>
 
-# Expose port and start
-EXPOSE 3000
-CMD ["npm", "start"]`}
-        />
+          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <h4 className="text-green-400 font-semibold mb-2">Artifacts</h4>
+            <p className="text-gray-300 text-sm mb-2">
+              Build outputs are preserved for download or deployment:
+            </p>
+            <pre className="text-xs text-gray-300 bg-black rounded p-2">
+{`artifacts:
+  name: "website-build"
+  paths:
+    - "./dist"`}
+            </pre>
+          </div>
 
-        <div className="bg-yellow-900/20 border border-yellow-500 rounded-lg p-4">
-          <h4 className="text-yellow-400 font-semibold mb-2">Required Tools</h4>
-          <ul className="text-gray-300 space-y-1 text-xs sm:text-sm">
-            <li>• Docker daemon available in pipeline environment</li>
-            <li>
-              • <code>hadolint</code> for Dockerfile validation
-            </li>
-            <li>
-              • <code>trivy</code> for security scanning
-            </li>
-            <li>• Registry credentials configured as secrets</li>
-          </ul>
+          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <h4 className="text-green-400 font-semibold mb-2">Docker Images</h4>
+            <p className="text-gray-300 text-sm mb-2">
+              Each step runs in a containerized environment:
+            </p>
+            <pre className="text-xs text-gray-300 bg-black rounded p-2">
+{`image: "node:18-alpine"  # For Node.js steps
+image: "alpine:latest"    # For deployment`}
+            </pre>
+          </div>
+
+          <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+            <h4 className="text-green-400 font-semibold mb-2">Secrets</h4>
+            <p className="text-gray-300 text-sm mb-2">
+              Sensitive data like tokens are injected securely:
+            </p>
+            <pre className="text-xs text-gray-300 bg-black rounded p-2">
+{`secrets:
+  - "DEPLOYMENT_TOKEN"
+
+# Available as: $DEPLOYMENT_TOKEN`}
+            </pre>
+          </div>
+        </div>
+
+        <div className="bg-green-900/20 border border-green-500 rounded-lg p-4">
+          <h4 className="text-green-400 font-semibold mb-2">
+            ✅ Ready to Use
+          </h4>
+          <p className="text-gray-300 text-sm">
+            Copy this YAML into <code>.zipline/pipeline.yml</code> in your repository root, 
+            configure the <code>DEPLOYMENT_TOKEN</code> secret in your repository settings, 
+            and push to the main branch to trigger your first pipeline!
+          </p>
         </div>
       </div>
     ),
