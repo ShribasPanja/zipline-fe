@@ -165,8 +165,8 @@ const content = {
         </h3>
         <div className="bg-gray-900 rounded-lg p-4 border border-gray-700">
           <p className="text-gray-300 mb-3">
-            Click the &ldquo;Connect with GitHub&rdquo; button on the homepage to authorize
-            Zipline:
+            Click the &ldquo;Connect with GitHub&rdquo; button on the homepage
+            to authorize Zipline:
           </p>
           <div className="bg-black rounded p-3 font-mono text-sm text-green-400">
             → Navigate to Zipline homepage
@@ -373,8 +373,8 @@ steps:
               execution order
             </li>
             <li>
-              • <strong>Failure Isolation:</strong> Failed steps don&rsquo;t block
-              independent paths
+              • <strong>Failure Isolation:</strong> Failed steps don&rsquo;t
+              block independent paths
             </li>
             <li>
               • <strong>Resource Optimization:</strong> Better CPU and time
@@ -534,8 +534,8 @@ steps:
           Simple Node.js DAG Pipeline
         </h3>
         <p className="text-gray-300">
-          Here&rsquo;s a simple Node.js pipeline that demonstrates DAG concepts with
-          parallel execution:
+          Here&rsquo;s a simple Node.js pipeline that demonstrates DAG concepts
+          with parallel execution:
         </p>
 
         <CodeBlock
@@ -1060,9 +1060,9 @@ CMD ["npm", "start"]`}
         </h3>
         <p className="text-gray-300 leading-relaxed">
           Secrets are encrypted key-value pairs used to store sensitive
-          information like API keys, passwords, and tokens. They&rsquo;re securely
-          injected into pipeline environments without exposing values in logs or
-          configurations.
+          information like API keys, passwords, and tokens. They&rsquo;re
+          securely injected into pipeline environments without exposing values
+          in logs or configurations.
         </p>
 
         <h3 className="text-xl font-semibold text-green-400">Adding Secrets</h3>
@@ -1241,8 +1241,8 @@ steps:
           <h4 className="text-green-400 mb-2">Features:</h4>
           <ul className="text-gray-300 space-y-2">
             <li>
-              • <strong>Real-time streaming:</strong> Watch logs as they&rsquo;re
-              generated
+              • <strong>Real-time streaming:</strong> Watch logs as
+              they&rsquo;re generated
             </li>
             <li>
               • <strong>WebSocket connection:</strong> Low-latency log delivery

@@ -1,4 +1,5 @@
 export * from "./useAuth";
+export * from "./useCurrentUser";
 export * from "./useGitHubRepositories";
 export * from "./useWebhookStatuses";
 export * from "./useActivities";

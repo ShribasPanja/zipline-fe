@@ -38,7 +38,7 @@ function DashboardPageContent() {
     isLoading: executionsLoading,
     error: executionsError,
     refetch: refetchExecutions,
-  } = usePipelineExecutions(undefined, 20);
+  } = usePipelineExecutions(undefined, 20, token);
 
   const handleLogout = () => {
     logout();
@@ -80,7 +80,7 @@ function DashboardPageContent() {
               error={activitiesError}
               onRefresh={refetchActivities}
             />
-            
+
             <PipelineExecutionsList
               executions={executions}
               stats={stats}
@@ -101,13 +101,15 @@ function DashboardPageContent() {
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen p-8">
-        <div className="max-w-4xl mx-auto">
-          <LoadingSpinner text="Loading..." />
+    <Suspense
+      fallback={
+        <div className="min-h-screen p-8">
+          <div className="max-w-4xl mx-auto">
+            <LoadingSpinner text="Loading..." />
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <DashboardPageContent />
     </Suspense>
   );

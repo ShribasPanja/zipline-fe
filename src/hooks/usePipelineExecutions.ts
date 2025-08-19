@@ -25,7 +25,8 @@ export interface PipelineExecutionStats {
 
 export const usePipelineExecutions = (
   repoName?: string,
-  limit: number = 50
+  limit: number = 50,
+  token?: string | null
 ) => {
   const [executions, setExecutions] = useState<PipelineExecution[]>([]);
   const [stats, setStats] = useState<PipelineExecutionStats | null>(null);
@@ -33,6 +34,14 @@ export const usePipelineExecutions = (
   const [error, setError] = useState<string | null>(null);
 
   const fetchExecutions = useCallback(async () => {
+    // Don't fetch if no token is available
+    if (!token) {
+      setExecutions([]);
+      setStats(null);
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -41,10 +50,18 @@ export const usePipelineExecutions = (
       if (repoName) params.append("repoName", repoName);
       if (limit) params.append("limit", limit.toString());
 
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL
-        }/api/pipeline/executions?${params.toString()}`
+        }/api/pipeline/executions?${params.toString()}`,
+        {
+          headers,
+        }
       );
 
       if (!response.ok) {
@@ -63,7 +80,7 @@ export const usePipelineExecutions = (
     } finally {
       setIsLoading(false);
     }
-  }, [repoName, limit]);
+  }, [repoName, limit, token]);
 
   useEffect(() => {
     fetchExecutions();

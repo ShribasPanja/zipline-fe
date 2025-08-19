@@ -20,6 +20,12 @@ export interface Activity {
     name: string;
     email: string;
   };
+  user?: {
+    id: string;
+    login: string;
+    name?: string;
+    email?: string;
+  };
   status: "success" | "failed" | "in_progress";
   metadata?: {
     executionId?: string;

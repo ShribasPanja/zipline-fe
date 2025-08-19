@@ -97,7 +97,7 @@ export const PipelineExecutionsList = ({
       <div className="bg-black border border-gray-800 rounded-lg font-mono">
         <div className="bg-gray-900 border-b border-gray-800 px-4 py-2 flex items-center justify-between">
           <span className="text-green-400">
-            zipline@dashboard:~/pipeline-history
+            zipline@dashboard:~/my-pipeline-history
           </span>
           <button
             onClick={onRefresh}
@@ -110,12 +110,12 @@ export const PipelineExecutionsList = ({
 
         <div className="p-4">
           <div className="text-green-400 mb-4 text-sm">
-            === Pipeline Execution History ===
+            === My Pipeline Execution History ===
           </div>
 
           {executions.length === 0 ? (
             <div className="text-gray-500 text-sm">
-              [INFO] No pipeline executions found
+              [INFO] No pipeline executions found for your account
             </div>
           ) : (
             <div className="space-y-2">
@@ -177,7 +177,7 @@ export const PipelineExecutionsList = ({
               Entries: {executions.length} | Last updated:{" "}
               {new Date().toLocaleTimeString()}
             </span>
-            <span>Zipline Pipeline History</span>
+            <span>My Pipeline History</span>
           </div>
         </div>
       </div>
